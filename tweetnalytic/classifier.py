@@ -1,6 +1,7 @@
 """Class created from """
 import nltk
 import re
+import pickle
 
 from nltk.classify import NaiveBayesClassifier
 from nltk.classify import accuracy
@@ -11,7 +12,12 @@ from nltk.tokenize import TweetTokenizer
 class TweetsClassifier:
     """Used to transform, classify and return classification from sentence """
     def __init__(self):
-        self.classifier = self._train_classifier()
+        try:
+            print("Loading classifier...")
+            self.classifier = self.load_classifier()
+            print(f"Classifier loaded...")
+        except FileNotFoundError:
+            self.classifier = self._train_classifier()
 
     def format_sentence(self, sent):
         """Tokenize sentence and return format that can work with
@@ -69,8 +75,17 @@ class TweetsClassifier:
         print(f"Classifier trained with "
               f"success - accuracy rating: {round(accuracy(classifier, testing), 2)}%")
 
+        self.save_classifier(classifier)
         return classifier
 
     def classify(self, text):
         """Uses trained classifier to classify a piece of text."""
         return self.classifier.classify(self.format_sentence(text))
+
+    def save_classifier(self, classifier):
+        with open('classifier.pickle', 'wb') as save_classifier:
+            pickle.dump(classifier, save_classifier)
+
+    def load_classifier(self):
+        with open("classifier.pickle", "rb") as loaded_classifier:
+            return pickle.load(loaded_classifier)

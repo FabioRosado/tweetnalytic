@@ -8,6 +8,7 @@ config.py
 
 # Distribution / packaging
 .Python
+.pyc
 build/
 develop-eggs/
 dist/
@@ -116,3 +117,4 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
+__pycache__/
