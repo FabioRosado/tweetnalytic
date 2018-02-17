@@ -3,6 +3,7 @@ import tweepy
 from config import CONSUMER_KEY, CONSUMER_SECRET
 from config import ACCESS_TOKEN, ACCESS_SECRET
 
+
 class SearchTwitter:
     """Searches twitter for last 1000 tweets about a term"""
     def __init__(self, term):
@@ -21,13 +22,15 @@ class SearchTwitter:
               f"this may take a while...")
 
         save_tweet_text = [tweet._json['text'] for tweet in search]
-
         while len(save_tweet_text) < 1000:
             try:
                 oldest = search[-1].id - 1
                 search = api.search(self.term, lang='en', count=100, max_id=oldest)
                 new_tweets = [tweet._json['text'] for tweet in search]
                 save_tweet_text.extend(new_tweets)
+
+                # Turn into a set to remove duplicated tweets, then back to list
+                save_tweet_text = list(set(save_tweet_text))
             except IndexError:
                 break
 

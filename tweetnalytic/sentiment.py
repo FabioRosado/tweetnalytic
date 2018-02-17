@@ -25,7 +25,6 @@ def classify_term(term):
     except ZeroDivisionError:
         print(f"Sorry, no tweets received. Unable to rate '{term}'.")
 
-print(classify_term("Renault"))
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
