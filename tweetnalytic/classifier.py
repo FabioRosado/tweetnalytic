@@ -32,36 +32,31 @@ class TweetsClassifier:
 
         return {word: True for word in nltk.word_tokenize(sent)}
 
-    def _get_positive_tweets(self):
-        """Use different sources to get positive tweets and increase accuracy
-        of the classifier."""
-        print("Getting data: positive tweets...")
+    def categorise_tweets(self):
+        """Prepares dataset containing positive/negative tweets."""
         positive_tweets = []
-        with open('./../data/positive_tweets.txt') as file:
-            for tweet in file:
-                positive_tweets.append([self.format_sentence(tweet), 'pos'])
-                if len(positive_tweets) == 2250:
-                    print("Processed 2,250 Tweets so far - Halfway point reached")
-        print(f"Done. {len(positive_tweets)} tweets collected")
-        return positive_tweets
-
-    def _get_negative_tweets(self):
-        """Use different sources to get negative tweets and increase accuracy
-        of the classifier."""
         negative_tweets = []
-        print("Getting Data: negative tweets...")
+
+        print("Categorising  data, this may take a while...")
+
         with open('./../data/negative_tweets.txt') as file:
             for tweet in file:
                 negative_tweets.append([self.format_sentence(tweet), 'neg'])
-                if len(negative_tweets) == 2250:
-                    print("Processed 2,250 Tweets so far - Halfway point reached")
-        print(f"Done. {len(negative_tweets)} tweets collected")
-        return negative_tweets
+
+        print("Done for negative tweets.")
+
+        with open('./../data/positive_tweets.txt') as file:
+            for tweet in file:
+                positive_tweets.append([self.format_sentence(tweet), 'pos'])
+
+        print("Done for positive tweets.")
+
+        return positive_tweets, negative_tweets
 
     def _train_classifier(self):
         """Use 80% of tweets to train a classifier."""
-        pos_tweets = self._get_positive_tweets()
-        neg_tweets = self._get_negative_tweets()
+        pos_tweets = self.categorise_tweets()[0]
+        neg_tweets = self.categorise_tweets()[1]
 
         training = pos_tweets[:int(.8 * len(pos_tweets))] + \
             neg_tweets[:int(.8 * len(neg_tweets))]
